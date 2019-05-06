@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.BookinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Bookinfo" id="ResultMap">
+        <result column="bookname" javaType="String" property="bookname"/>
+        <result column="isbn" javaType="String" property="isbn"/>
+        <result column="price" javaType="String" property="price"/>
+        <result column="author" javaType="String" property="author"/>
+        <result column="publisher" javaType="String" property="publisher"/>
+        <result column="cate" javaType="String" property="cate"/>
+        <result column="userid" javaType="Integer" property="userid"/>
+        <result column="imgurl" javaType="String" property="imgurl"/>
+        <result column="publishDate" javaType="java.util.Date" property="publishDate"/>
+        <result column="number" javaType="Integer" property="number"/>
+        <result column="point" javaType="String" property="point"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_BOOKINFO_COLUMN">
+					b.bookname bookname,					b.ISBN isbn,					b.price price,					b.author author,					b.publisher publisher,					b.cate cate,					b.userid userid,					b.imgurl imgurl,					b.publishDate publishDate,b.number number,b.point point			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_BOOKINFO_WHERE">
+        <if test="bookname !=null and bookname.length()!=0 ">
+            AND b.bookname=#{bookname}
+        </if>
+        <if test="isbn !=null and isbn.length()!=0 ">
+            AND b.ISBN=#{isbn}
+        </if>
+        <if test="price !=null and price.length()!=0 ">
+            AND b.price=#{price}
+        </if>
+        <if test="author !=null and author.length()!=0  and author != ''">
+            AND b.author=#{author}
+        </if>
+        <if test="publisher !=null and publisher.length()!=0 ">
+            AND b.publisher=#{publisher}
+        </if>
+        <if test="cate !=null and cate != ''">
+            AND b.cate=#{cate}
+        </if>
+        <if test="userid !=null ">
+            AND b.userid=#{userid}
+        </if>
+        <if test="imgurl !=null and imgurl.length()!=0 ">
+            AND b.imgurl=#{imgurl}
+        </if>
+        <if test="publishDate !=null ">
+            AND b.publishDate=#{publishDate}
+        </if>
+        <if test="number !=null ">
+            AND b.number=#{number}
+        </if>
+        <if test="point !=null ">
+            AND b.point=#{point}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Bookinfo" resultType="com.bll.biz.entity.Bookinfo">
+        select
+        <include refid="SQL_BOOKINFO_COLUMN"/>
+        from BOOKINFO b
+        <where>
+            <include refid="SQL_BOOKINFO_WHERE"/>
+        </where>
+
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY b.${orderStr}
+        </if >
+       
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY b.ISBN desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Bookinfo" resultType="int">
+        select count(*) as counts
+        from BOOKINFO b
+        <where>
+            <include refid="SQL_BOOKINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Bookinfo">
+        select
+        <include refid="SQL_BOOKINFO_COLUMN"/>
+        from BOOKINFO b
+        <where>
+            b.ISBN = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="com.bll.biz.entity.Bookinfo">
+        insert into BOOKINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookname != null">
+                bookname,
+            </if>
+            <if test="isbn != null">
+                ISBN,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="publisher != null">
+                publisher,
+            </if>
+            <if test="cate != null">
+                cate,
+            </if>
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="imgurl != null">
+                imgurl,
+            </if>
+            <if test="publishDate != null">
+                publishDate,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="point != null">
+                point
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookname != null">
+                #{bookname,jdbcType=VARCHAR},
+            </if>
+            <if test="isbn != null">
+                #{isbn,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="publisher != null">
+                #{publisher,jdbcType=VARCHAR},
+            </if>
+            <if test="cate != null">
+                #{cate,jdbcType=NUMERIC},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=NUMERIC},
+            </if>
+            <if test="imgurl != null">
+                #{imgurl,jdbcType=VARCHAR},
+            </if>
+            <if test="publishDate != null">
+                #{publishDate,jdbcType=},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=NUMERIC},
+            </if>
+            <if test="point != null">
+                #{point,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Bookinfo">
+        UPDATE BOOKINFO
+        <set>
+            <if test="bookname !=null">
+                bookname = #{bookname} ,
+            </if>
+            <if test="isbn !=null">
+                ISBN = #{isbn} ,
+            </if>
+            <if test="price !=null">
+                price = #{price} ,
+            </if>
+            <if test="author !=null">
+                author = #{author} ,
+            </if>
+            <if test="publisher !=null">
+                publisher = #{publisher} ,
+            </if>
+            <if test="cate !=null">
+                cate = #{cate} ,
+            </if>
+            <if test="userid !=null">
+                userid = #{userid} ,
+            </if>
+            <if test="imgurl !=null">
+                imgurl = #{imgurl} ,
+            </if>
+            <if test="publishDate !=null">
+                publishDate = #{publishDate},
+            </if>
+            <if test="number !=null">
+                number = #{number},
+            </if>
+            <if test="point !=null">
+                point = #{point}
+            </if>
+        </set>
+        WHERE
+        ISBN=#{isbn}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Bookinfo">
+		DELETE FROM BOOKINFO
+		WHERE
+					ISBN=#{isbn} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM bookinfo
+		WHERE
+					ISBN=#{isbn} 			</delete>
+
+</mapper>

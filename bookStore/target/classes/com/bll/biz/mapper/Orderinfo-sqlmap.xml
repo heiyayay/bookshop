@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.OrderinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Orderinfo" id="ResultMap">
+        <result column="orderid" javaType="Integer" property="orderid"/>
+        <result column="quantity" javaType="String" property="quantity"/>
+        <result column="total" javaType="String" property="total"/>
+        <result column="orderdate" javaType="java.util.Date" property="orderdate"/>
+        <result column="userid" javaType="Integer" property="userid"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_ORDERINFO_COLUMN">
+					o.orderid orderid,					o.quantity quantity,					o.total total,					o.orderdate orderdate,					o.userid userid			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_ORDERINFO_WHERE">
+        <if test="orderid !=null ">
+            AND o.orderid=#{orderid}
+        </if>
+        <if test="quantity !=null and quantity.length()!=0 ">
+            AND o.quantity=#{quantity}
+        </if>
+        <if test="total !=null and total.length()!=0 ">
+            AND o.total=#{total}
+        </if>
+        <if test="orderdate !=null ">
+            AND o.orderdate=#{orderdate}
+        </if>
+        <if test="userid !=null ">
+            AND o.userid=#{userid}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Orderinfo" resultType="com.bll.biz.entity.Orderinfo">
+        select
+        <include refid="SQL_ORDERINFO_COLUMN"/>
+        from ORDERINFO o
+        <where>
+            <include refid="SQL_ORDERINFO_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY o.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            o.orderid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Orderinfo" resultType="int">
+        select count(*) as counts
+        from ORDERINFO o
+        <where>
+            <include refid="SQL_ORDERINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Orderinfo">
+        select
+        <include refid="SQL_ORDERINFO_COLUMN"/>
+        from ORDERINFO o
+        <where>
+            o.orderid = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="com.bll.biz.entity.Orderinfo">
+        insert into ORDERINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderid != null">
+                orderid,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="total != null">
+                total,
+            </if>
+            <if test="orderdate != null">
+                orderdate,
+            </if>
+            <if test="userid != null">
+                userid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderid != null">
+                #{orderid,jdbcType=NUMERIC},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=VARCHAR},
+            </if>
+            <if test="total != null">
+                #{total,jdbcType=VARCHAR},
+            </if>
+            <if test="orderdate != null">
+                #{orderdate,jdbcType=},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=NUMERIC},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Orderinfo">
+        UPDATE ORDERINFO
+        <set>
+            <if test="orderid !=null">
+                orderid = #{orderid} ,
+            </if>
+            <if test="quantity !=null">
+                quantity = #{quantity} ,
+            </if>
+            <if test="total !=null">
+                total = #{total} ,
+            </if>
+            <if test="orderdate !=null">
+                orderdate = #{orderdate} ,
+            </if>
+            <if test="userid !=null">
+                userid = #{userid}
+            </if>
+        </set>
+        WHERE
+        orderid=#{orderid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Orderinfo">
+		DELETE FROM ORDERINFO
+		WHERE
+					orderid=#{orderid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM orderinfo
+		WHERE
+					orderid=#{orderid} 			</delete>
+
+</mapper>

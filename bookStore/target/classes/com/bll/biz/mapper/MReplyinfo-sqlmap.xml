@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.MReplyinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.MReplyinfo" id="ResultMap">
+        <result column="mReplyid" javaType="Integer" property="mReplyid"/>
+        <result column="mReplycontent" javaType="String" property="mReplycontent"/>
+        <result column="mPubid" javaType="Integer" property="mPubid"/>
+        <result column="mReplydate" javaType="java.util.Date" property="mReplydate"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_M_REPLYINFO_COLUMN">
+					mr.m_replyid mReplyid,					mr.m_replycontent mReplycontent,					mr.m_pubid mPubid,					mr.m_replydate mReplydate			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_M_REPLYINFO_WHERE">
+        <if test="mReplyid !=null ">
+            AND mr.m_replyid=#{mReplyid}
+        </if>
+        <if test="mReplycontent !=null and mReplycontent.length()!=0 ">
+            AND mr.m_replycontent=#{mReplycontent}
+        </if>
+        <if test="mPubid !=null ">
+            AND mr.m_pubid=#{mPubid}
+        </if>
+        <if test="mReplydate !=null ">
+            AND mr.m_replydate=#{mReplydate}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.MReplyinfo" resultType="com.bll.biz.entity.MReplyinfo">
+        select
+        <include refid="SQL_M_REPLYINFO_COLUMN"/>
+        from M_REPLYINFO mr
+        <where>
+            <include refid="SQL_M_REPLYINFO_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY mr.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            mr.m_replyid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.MReplyinfo" resultType="int">
+        select count(*) as counts
+        from M_REPLYINFO mr
+        <where>
+            <include refid="SQL_M_REPLYINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.MReplyinfo">
+        select
+        <include refid="SQL_M_REPLYINFO_COLUMN"/>
+        from M_REPLYINFO mr
+        <where>
+            mr.m_replyid = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é??è?¤?????¨??¨?±?ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="com.bll.biz.entity.MReplyinfo">
+        insert into M_REPLYINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mReplyid != null">
+                m_replyid,
+            </if>
+            <if test="mReplycontent != null">
+                m_replycontent,
+            </if>
+            <if test="mPubid != null">
+                m_pubid,
+            </if>
+            <if test="mReplydate != null">
+                m_replydate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mReplyid != null">
+                #{mReplyid,jdbcType=NUMERIC},
+            </if>
+            <if test="mReplycontent != null">
+                #{mReplycontent,jdbcType=VARCHAR},
+            </if>
+            <if test="mPubid != null">
+                #{mPubid,jdbcType=NUMERIC},
+            </if>
+            <if test="mReplydate != null">
+                #{mReplydate,jdbcType=},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.MReplyinfo">
+        UPDATE M_REPLYINFO
+        <set>
+            <if test="mReplyid !=null">
+                m_replyid = #{mReplyid} ,
+            </if>
+            <if test="mReplycontent !=null">
+                m_replycontent = #{mReplycontent} ,
+            </if>
+            <if test="mPubid !=null">
+                m_pubid = #{mPubid} ,
+            </if>
+            <if test="mReplydate !=null">
+                m_replydate = #{mReplydate}
+            </if>
+        </set>
+        WHERE
+        m_replyid=#{mReplyid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.MReplyinfo">
+		DELETE FROM M_REPLYINFO
+		WHERE
+					m_replyid=#{mReplyid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM m_replyinfo
+		WHERE
+					m_replyid=#{mReplyid} 			</delete>
+
+    <select id="getDetails" parameterType="int" resultType="com.bll.biz.entity.MessageDetails">
+        select
+        	m.m_pubcontent mPubcontent,
+            m.m_pubdate mPubdate,
+            m.m_pubid mPubid,
+            mr.m_replyid mReplyid,
+            mr.m_replycontent mReplycontent,
+            mr.m_replydate mReplydate
+        from messageinfo m,  m_replyinfo mr
+        where mr.m_replyid = #{id}
+        and m.m_pubid = mr.m_pubid
+    </select>
+
+</mapper>

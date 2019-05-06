@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.BookcateinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Bookcateinfo" id="ResultMap">
+        <result column="cateid" javaType="Integer" property="cateid"/>
+        <result column="catename" javaType="String" property="catename"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_BOOKCATEINFO_COLUMN">
+					b.cateid cateid,					b.catename catename			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_BOOKCATEINFO_WHERE">
+        <if test="cateid !=null ">
+            AND b.cateid=#{cateid}
+        </if>
+        <if test="catename !=null and catename.length()!=0 ">
+            AND b.catename=#{catename}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Bookcateinfo" resultType="com.bll.biz.entity.Bookcateinfo">
+        select
+        <include refid="SQL_BOOKCATEINFO_COLUMN"/>
+        from BOOKCATEINFO b
+        <where>
+            <include refid="SQL_BOOKCATEINFO_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY b.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            b.cateid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Bookcateinfo" resultType="int">
+        select count(*) as counts
+        from BOOKCATEINFO b
+        <where>
+            <include refid="SQL_BOOKCATEINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Bookcateinfo">
+        select
+        <include refid="SQL_BOOKCATEINFO_COLUMN"/>
+        from BOOKCATEINFO b
+        <where>
+            b.cateid = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="com.bll.biz.entity.Bookcateinfo">
+        insert into BOOKCATEINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cateid != null">
+                cateid,
+            </if>
+            <if test="catename != null">
+                catename,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cateid != null">
+                #{cateid,jdbcType=NUMERIC},
+            </if>
+            <if test="catename != null">
+                #{catename,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Bookcateinfo">
+        UPDATE BOOKCATEINFO
+        <set>
+            <if test="cateid !=null">
+                cateid = #{cateid} ,
+            </if>
+            <if test="catename !=null">
+                catename = #{catename}
+            </if>
+        </set>
+        WHERE
+        cateid=#{cateid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Bookcateinfo">
+		DELETE FROM BOOKCATEINFO
+		WHERE
+					cateid=#{cateid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM bookcateinfo
+		WHERE
+					cateid=#{cateid} 			</delete>
+
+</mapper>

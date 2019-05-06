@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.MessageinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Messageinfo" id="ResultMap">
+        <result column="mPubid" javaType="Integer" property="mPubid"/>
+        <result column="mPubcontent" javaType="String" property="mPubcontent"/>
+        <result column="mPubdate" javaType="java.util.Date" property="mPubdate"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_MESSAGEINFO_COLUMN">
+					m.m_pubid mPubid,					m.m_pubcontent mPubcontent,					m.m_pubdate mPubdate			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_MESSAGEINFO_WHERE">
+        <if test="mPubid !=null ">
+            AND m.m_pubid=#{mPubid}
+        </if>
+        <if test="mPubcontent !=null and mPubcontent.length()!=0 ">
+            AND m.m_pubcontent=#{mPubcontent}
+        </if>
+        <if test="mPubdate !=null ">
+            AND m.m_pubdate=#{mPubdate}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Messageinfo" resultType="com.bll.biz.entity.Messageinfo">
+        select
+        <include refid="SQL_MESSAGEINFO_COLUMN"/>
+        from MESSAGEINFO m
+        <where>
+            <include refid="SQL_MESSAGEINFO_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY m.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            m.m_pubid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Messageinfo" resultType="int">
+        select count(*) as counts
+        from MESSAGEINFO m
+        <where>
+            <include refid="SQL_MESSAGEINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Messageinfo">
+        select
+        <include refid="SQL_MESSAGEINFO_COLUMN"/>
+        from MESSAGEINFO m
+        <where>
+            m.m_pubid = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="com.bll.biz.entity.Messageinfo">
+        insert into MESSAGEINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mPubid != null">
+                m_pubid,
+            </if>
+            <if test="mPubcontent != null">
+                m_pubcontent,
+            </if>
+            <if test="mPubdate != null">
+                m_pubdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mPubid != null">
+                #{mPubid,jdbcType=NUMERIC},
+            </if>
+            <if test="mPubcontent != null">
+                #{mPubcontent,jdbcType=VARCHAR},
+            </if>
+            <if test="mPubdate != null">
+                #{mPubdate,jdbcType=},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Messageinfo">
+        UPDATE MESSAGEINFO
+        <set>
+            <if test="mPubid !=null">
+                m_pubid = #{mPubid} ,
+            </if>
+            <if test="mPubcontent !=null">
+                m_pubcontent = #{mPubcontent} ,
+            </if>
+            <if test="mPubdate !=null">
+                m_pubdate = #{mPubdate}
+            </if>
+        </set>
+        WHERE
+        m_pubid=#{mPubid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Messageinfo">
+		DELETE FROM MESSAGEINFO
+		WHERE
+					m_pubid=#{mPubid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM messageinfo
+		WHERE
+					m_pubid=#{mPubid} 			</delete>
+
+</mapper>

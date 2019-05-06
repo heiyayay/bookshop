@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.ShopcartMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Shopcart" id="ResultMap">
+        <result column="userid" javaType="Integer" property="userid"/>
+        <result column="isbn" javaType="String" property="isbn"/>
+        <result column="quantity" javaType="String" property="quantity"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_Shopcart_COLUMN">
+					u.userid userid,					u.isbn isbn,					u.quantity quantity								</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_Shopcart_WHERE">
+        <if test="userid !=null ">
+            AND u.userid=#{userid}
+        </if>
+        <if test="username !=null and username.length()!=0 ">
+            AND u.isbn=#{isbn}
+        </if>
+        <if test="password !=null and password.length()!=0 ">
+            AND u.quantity=#{quantity}
+        </if>
+
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Shopcart" resultType="com.bll.biz.entity.Shopcart">
+        select
+        <include refid="SQL_Shopcart_COLUMN"/>
+        from Shopcart u
+        <where>
+            <include refid="SQL_Shopcart_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY u.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            u.userid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Shopcart" resultType="int">
+        select count(*) as counts
+        from Shopcart u
+        <where>
+            <include refid="SQL_Shopcart_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Shopcart">
+        select
+        <include refid="SQL_Shopcart_COLUMN"/>
+        from Shopcart u
+        <where>
+            u.userid = #{idValue}
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.bll.biz.entity.Shopcart">
+        insert into Shopcart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="isbn != null">
+                isbn,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=NUMERIC},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=NUMERIC},
+            </if>
+            <if test="isbn != null">
+                #{isbn,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Shopcart">
+        UPDATE Shopcart
+        <set>
+            <if test="userid !=null">
+                userid = #{userid} ,
+            </if>
+            <if test="quantity !=null">
+                quantity = #{quantity} ,
+            </if>
+            <if test="isbn !=null">
+                isbn = #{isbn} ,
+            </if>
+
+        </set>
+        WHERE
+        userid=#{userid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Shopcart">
+		DELETE FROM Shopcart
+		WHERE
+					userid=#{userid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM userinfo
+		WHERE
+					userid=#{userid} 			</delete>
+
+</mapper>

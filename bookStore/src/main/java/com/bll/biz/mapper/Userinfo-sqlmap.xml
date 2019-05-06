@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- sqlmapper 层 -->
+<mapper namespace="com.bll.biz.mapper.UserinfoMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="com.bll.biz.entity.Userinfo" id="ResultMap">
+        <result column="userid" javaType="Integer" property="userid"/>
+        <result column="username" javaType="String" property="username"/>
+        <result column="password" javaType="String" property="password"/>
+        <result column="power" javaType="String" property="power"/>
+        <result column="email" javaType="String" property="email"/>
+        <result column="telphone" javaType="String" property="telphone"/>
+        <result column="address" javaType="String" property="address"/>
+        <result column="idcard" javaType="String" property="idcard"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_USERINFO_COLUMN">
+					u.userid userid,					u.username username,					u.password password,					u.power power,					u.email email,					u.telphone telphone,					u.address address,					u.idcard idcard			</sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_USERINFO_WHERE">
+        <if test="userid !=null ">
+            AND u.userid=#{userid}
+        </if>
+        <if test="username !=null and username.length()!=0 ">
+            AND u.username=#{username}
+        </if>
+        <if test="password !=null and password.length()!=0 ">
+            AND u.password=#{password}
+        </if>
+        <if test="power !=null and power.length()!=0 ">
+            AND u.power=#{power}
+        </if>
+        <if test="email !=null and email.length()!=0 ">
+            AND u.email=#{email}
+        </if>
+        <if test="telphone !=null and telphone.length()!=0 ">
+            AND u.telphone=#{telphone}
+        </if>
+        <if test="address !=null and address.length()!=0 ">
+            AND u.address=#{address}
+        </if>
+        <if test="idcard !=null and idcard.length()!=0 ">
+            AND u.idcard=#{idcard}
+        </if>
+    </sql>
+
+    <!-- Query All  -->
+    <select id="getList" parameterType="com.bll.biz.entity.Userinfo" resultType="com.bll.biz.entity.Userinfo">
+        select
+        <include refid="SQL_USERINFO_COLUMN"/>
+        from USERINFO u
+        <where>
+            <include refid="SQL_USERINFO_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY u.${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            u.userid desc
+        </if>
+        <if test="limit != null and limit.length() != 0">
+            Limit ${limit}
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="com.bll.biz.entity.Userinfo" resultType="int">
+        select count(*) as counts
+        from USERINFO u
+        <where>
+            <include refid="SQL_USERINFO_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="com.bll.biz.entity.Userinfo">
+        select
+        <include refid="SQL_USERINFO_COLUMN"/>
+        from USERINFO u
+        <where>
+            u.userid = #{idValue}
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.bll.biz.entity.Userinfo">
+        insert into USERINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="power != null">
+                power,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="telphone != null">
+                telphone,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="idcard != null">
+                idcard,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=NUMERIC},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="power != null">
+                #{power,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="telphone != null">
+                #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null">
+                #{idcard,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="com.bll.biz.entity.Userinfo">
+        UPDATE USERINFO
+        <set>
+            <if test="userid !=null">
+                userid = #{userid} ,
+            </if>
+            <if test="username !=null">
+                username = #{username} ,
+            </if>
+            <if test="password !=null">
+                password = #{password} ,
+            </if>
+            <if test="power !=null">
+                power = #{power} ,
+            </if>
+            <if test="email !=null">
+                email = #{email} ,
+            </if>
+            <if test="telphone !=null">
+                telphone = #{telphone} ,
+            </if>
+            <if test="address !=null">
+                address = #{address} ,
+            </if>
+            <if test="idcard !=null">
+                idcard = #{idcard}
+            </if>
+        </set>
+        WHERE
+        userid=#{userid}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="com.bll.biz.entity.Userinfo">
+		DELETE FROM USERINFO
+		WHERE
+					userid=#{userid} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM userinfo
+		WHERE
+					userid=#{userid} 			</delete>
+
+</mapper>
